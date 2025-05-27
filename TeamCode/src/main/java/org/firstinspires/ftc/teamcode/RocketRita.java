@@ -42,14 +42,40 @@ public class RocketRita extends LinearOpMode {
         while (opModeIsActive()) {
             double max;
 
-            double axial  = -gamepad1.left_stick_y;
+            double axial = -gamepad1.left_stick_y;
             double lateral = gamepad1.left_stick_x;
             double yaw = gamepad1.right_stick_x;
 
+            double FL0 = axial + lateral + yaw;
+            double FR1 = axial - lateral - yaw;
+            double BL2 = axial - lateral + yaw;
+            double BR3 = axial + lateral - yaw;
+
+            max = Math.max(Math.abs(FL0), Math.abs(FR1));
+            max = Math.max(max, Math.abs(BL2));
+            max = Math.max(max, Math.abs(BR3));
+
+            if (max > 1.0) {
+                FL0 /= max;
+                FR1 /= max;
+                BL2 /= max;
+                BR3 /= max;
+            }
+
+            FL0.setPower(FL0);
+            FR1.setPower(FR1);
+            FR1.setPower(FR1);
+            BR3.setPower(BR3);
+
+
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Front left/Right", "%4.2f, %4.2f", FL0, FR1);
+            telemetry.addData("Back left/Right", "%4.2f, %4.2f", BL2, BR3);
+            telemetry.update();
 
         }
-    }
-}
+    }}
+
 
 
 
